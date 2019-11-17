@@ -223,8 +223,8 @@ def _get_platform():
         platform = 'bsd'
         
     else:
-        raise Exception, 'Unknown or unsupported platform: "%s"' %\
-              sys.platform
+        raise Exception('Unknown or unsupported platform: "%s"' %\
+              sys.platform)
     
     return platform
 

@@ -29,11 +29,11 @@ sys.path = [HERE] + sys.path
 # ---------------------------------------------------------------------------
 
 def run_command(cmd):
-    print '+ %s' % cmd
+    print('+ %s' % cmd)
     return os.system(cmd)
 
 def die(msg):
-    print >> sys.stderr, msg
+    print(msg, file=sys.stderr)
     sys.exit(1)
 
 # ---------------------------------------------------------------------------
@@ -78,13 +78,13 @@ ext_package = os.path.join(PACKAGE, ext_module)
 build_c_file = False
 if not os.access(c_file, os.F_OK):
     build_c_file = True
-    print 'Can\'t find "%s". Attempting to make it.' % c_file
+    print('Can\'t find "%s". Attempting to make it.' % c_file)
 else:
     st_c = os.stat(c_file)
     st_pyx = os.stat(pyx_file)
     if st_c.st_mtime < st_pyx.st_mtime:
-        print '"%s" is newer than "%s". Rebuilding "%s".' %\
-              (pyx_file, c_file, c_file)
+        print('"%s" is newer than "%s". Rebuilding "%s".' %\
+              (pyx_file, c_file, c_file))
         build_c_file = True
 if build_c_file:
     rc = run_command('cython %s' % pyx_file)
