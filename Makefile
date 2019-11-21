@@ -12,7 +12,8 @@ build:
 
 install-e:
 	pip install -e .
-	# Note that this is linux-specific:
+	# Note that this is .so-platform specific
+	# .dll support will need similar commands
 	cd pyutmp && rm -rfv *.so && ln -s `find .. -wholename "../build/lib*/*.so"` ./
 
 install-wheel:
@@ -24,7 +25,7 @@ uninstall:
 test:
 	@# The cd to ~ is necessary because there is no .so symlink in pyutmp/
 	@# when installing as wheel and pyutmp/ is in the current directory
-	cd ~ && python -c 'import pyutmp; assert [x.__dict__ for x in pyutmp.UtmpFile()]'
+	cd ~ && python -m unittest $(CURDIR)/test_pyutmp.py
 
 print:
 	cd ~ && python -c 'import pyutmp, pprint; [pprint.pprint(x.__dict__) for x in pyutmp.UtmpFile()]'
