@@ -9,7 +9,7 @@
 # Imports
 # ---------------------------------------------------------------------------
 
-from distutils.core import setup, Extension
+from setuptools import setup, Extension
 import os
 import sys
 import imp
@@ -109,6 +109,7 @@ setup(
     py_modules=['pyutmp'],
     ext_modules=[Extension(ext_package,
                            [os.path.join(PACKAGE, c_file)],)],
+    setup_requires=["wheel"],
     classifiers = [
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',

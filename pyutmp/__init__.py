@@ -304,5 +304,5 @@ class Utmp(object):
 # extension module that might not yet have been generated.
 
 if not os.environ.get('__IN_SETUP_PY'):
-    exec('import pyutmp_%s as _pyutmp' % _get_platform())
+    exec('from . import pyutmp_%s as _pyutmp' % _get_platform())
 
