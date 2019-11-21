@@ -100,7 +100,7 @@ os.chdir(HERE)
 setup(
     name='pyutmp',
     packages = [PACKAGE],
-    version='0.2.2',
+    version='0.2.3',
     description=DESCRIPTION,
     long_description=long_description,
     url='http://software.clapper.org/pyutmp/',
