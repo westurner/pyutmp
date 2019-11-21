@@ -31,7 +31,7 @@ The ``pyutmp`` module supplies two classes: `UtmpFile` and `Utmp`. A
     for utmp in UtmpFile():
         # utmp is a Utmp object
         if utmp.ut_user_process:
-            print '%s logged in at %s on tty %s' % (utmp.ut_user, time.ctime(utmp.ut_time), utmp.ut_line)
+            print('%s logged in at %s on tty %s' % (utmp.ut_user, time.ctime(utmp.ut_time), utmp.ut_line))
 
 
 UtmpFile
@@ -114,6 +114,7 @@ Notes
 This module has been tested on the following operating systems:
 
 - Ubuntu Linux, version 8.04
+- Fedora Linux, version 30
 - FreeBSD
 - Mac OS X 10.4 (Tiger)
 - OpenSolaris (2008.05, x86, using the SunStudio 12 compiler suite)
