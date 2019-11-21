@@ -13,7 +13,7 @@ build:
 install-e:
 	pip install -e .
 	# Note that this is linux-specific:
-	cd pyutmp && rm -rf *.so && ln -s `find ../build/lib*/*.so` ./
+	cd pyutmp && rm -rfv *.so && ln -s `find .. -wholename "../build/lib*/*.so"` ./
 
 install-wheel:
 	pip install `ls ./dist/pyutmp-*.whl | tail -n1`
