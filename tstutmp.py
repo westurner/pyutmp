@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pyutmp
 import time
 import tty
