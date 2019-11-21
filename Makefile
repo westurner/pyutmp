@@ -22,12 +22,12 @@ uninstall:
 	pip uninstall -y pyutmp
 
 test:
-	@# The cd to / is necessary because there is no .so symlink in pyutmp/
+	@# The cd to ~ is necessary because there is no .so symlink in pyutmp/
 	@# when installing as wheel and pyutmp/ is in the current directory
-	cd / && python -c 'import pyutmp; assert [x.__dict__ for x in pyutmp.UtmpFile()]'
+	cd ~ && python -c 'import pyutmp; assert [x.__dict__ for x in pyutmp.UtmpFile()]'
 
 print:
-	python -c 'import pyutmp, pprint; [pprint.pprint(x.__dict__) for x in pyutmp.UtmpFile()]'
+	cd ~ && python -c 'import pyutmp, pprint; [pprint.pprint(x.__dict__) for x in pyutmp.UtmpFile()]'
 
 clean:
 	rm -fv pyutmp_*.so ./pyutmp/*.so
