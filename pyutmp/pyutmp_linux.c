@@ -2190,6 +2190,54 @@ static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
 /* PyObjectCompare.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CompareEq_object_str(PyObject *op1, PyObject *op2, int pyop);
 
+/* decode_c_string_utf16.proto (used by decode_c_string) */
+static CYTHON_INLINE PyObject *__Pyx_PyUnicode_DecodeUTF16(const char *s, Py_ssize_t size, const char *errors) {
+    int byteorder = 0;
+    return PyUnicode_DecodeUTF16(s, size, errors, &byteorder);
+}
+static CYTHON_INLINE PyObject *__Pyx_PyUnicode_DecodeUTF16LE(const char *s, Py_ssize_t size, const char *errors) {
+    int byteorder = -1;
+    return PyUnicode_DecodeUTF16(s, size, errors, &byteorder);
+}
+static CYTHON_INLINE PyObject *__Pyx_PyUnicode_DecodeUTF16BE(const char *s, Py_ssize_t size, const char *errors) {
+    int byteorder = 1;
+    return PyUnicode_DecodeUTF16(s, size, errors, &byteorder);
+}
+
+/* decode_c_string.proto */
+static CYTHON_INLINE PyObject* __Pyx_decode_c_string(
+         const char* cstring, Py_ssize_t start, Py_ssize_t stop,
+         const char* encoding, const char* errors,
+         PyObject* (*decode_func)(const char *s, Py_ssize_t size, const char *errors));
+
+/* FormatTypeName.proto (used by RaiseErrorWithObjectType1) */
+#if CYTHON_COMPILING_IN_LIMITED_API && __PYX_LIMITED_VERSION_HEX >= 0x030d0000
+typedef PyObject *__Pyx_TypeName;
+#define __Pyx_FMT_TYPENAME "%N"
+#define __Pyx_PyType_GetFullyQualifiedName(tp) Py_NewRef((PyObject*)tp)
+#define __Pyx_DECREF_TypeName(obj) Py_DECREF(obj)
+#elif CYTHON_COMPILING_IN_LIMITED_API
+typedef PyObject *__Pyx_TypeName;
+#define __Pyx_FMT_TYPENAME "%U"
+#define __Pyx_DECREF_TypeName(obj) Py_XDECREF(obj)
+static __Pyx_TypeName __Pyx_PyType_GetFullyQualifiedName(PyTypeObject* tp);
+#else  // !LIMITED_API
+typedef const char *__Pyx_TypeName;
+#define __Pyx_FMT_TYPENAME "%.200s"
+#define __Pyx_PyType_GetFullyQualifiedName(tp) ((tp)->tp_name)
+#define __Pyx_DECREF_TypeName(obj)
+#endif
+
+/* RaiseErrorWithObjectType1.proto (used by RaiseUnexpectedTypeError) */
+#define __Pyx_RaiseTypeErrorWithObjectType1(message, arg, obj) __Pyx_RaiseErrorWithObjectType1(PyExc_TypeError, message, arg, obj)
+#define __Pyx_RaiseErrorWithObjectType1(exc_type, message, arg, obj) __Pyx_RaiseErrorWithType1(exc_type, message, arg, Py_TYPE(obj))
+CYTHON_UNUSED
+static void __Pyx_RaiseErrorWithType1(PyObject* exc_type, const char* message, const char *arg, PyTypeObject *type_obj);
+
+/* RaiseUnexpectedTypeError.proto */
+CYTHON_UNUSED
+static int __Pyx_RaiseUnexpectedTypeError(const char *expected, PyObject *obj);
+
 /* PyObjectFastCallMethod.proto */
 #if CYTHON_VECTORCALL
 #define __Pyx_PyObject_FastCallMethod(name, args, nargsf) PyObject_VectorcallMethod(name, args, nargsf, NULL)
@@ -2456,24 +2504,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyLong_From_long(long value);
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyLong_From_int(int value);
 
-/* FormatTypeName.proto */
-#if CYTHON_COMPILING_IN_LIMITED_API && __PYX_LIMITED_VERSION_HEX >= 0x030d0000
-typedef PyObject *__Pyx_TypeName;
-#define __Pyx_FMT_TYPENAME "%N"
-#define __Pyx_PyType_GetFullyQualifiedName(tp) Py_NewRef((PyObject*)tp)
-#define __Pyx_DECREF_TypeName(obj) Py_DECREF(obj)
-#elif CYTHON_COMPILING_IN_LIMITED_API
-typedef PyObject *__Pyx_TypeName;
-#define __Pyx_FMT_TYPENAME "%U"
-#define __Pyx_DECREF_TypeName(obj) Py_XDECREF(obj)
-static __Pyx_TypeName __Pyx_PyType_GetFullyQualifiedName(PyTypeObject* tp);
-#else  // !LIMITED_API
-typedef const char *__Pyx_TypeName;
-#define __Pyx_FMT_TYPENAME "%.200s"
-#define __Pyx_PyType_GetFullyQualifiedName(tp) ((tp)->tp_name)
-#define __Pyx_DECREF_TypeName(obj)
-#endif
-
 /* CIntFromPy.proto */
 static CYTHON_INLINE long __Pyx_PyLong_As_long(PyObject *);
 
@@ -2563,6 +2593,7 @@ int __pyx_module_is_main_pyutmp__pyutmp_linux = 0;
 /* #### Code section: global_var ### */
 static PyObject *__pyx_builtin_object;
 /* #### Code section: string_decls ### */
+static const char __pyx_k_surrogateescape[] = "surrogateescape";
 /* #### Code section: decls ### */
 static PyObject *__pyx_pf_6pyutmp_12pyutmp_linux_9_UtmpFile___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_path); /* proto */
 static PyObject *__pyx_pf_6pyutmp_12pyutmp_linux_9_UtmpFile_2__del__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
@@ -2646,9 +2677,9 @@ static __pyx_mstatetype __pyx_mstate_global_static =
 static __pyx_mstatetype * const __pyx_mstate_global = &__pyx_mstate_global_static;
 #endif
 /* #### Code section: constant_name_defines ### */
-#define __pyx_kp_u_ __pyx_string_tab[0]
+#define __pyx_kp_u__2 __pyx_string_tab[0]
 #define __pyx_kp_u_dev __pyx_string_tab[1]
-#define __pyx_kp_u__2 __pyx_string_tab[2]
+#define __pyx_kp_u_ __pyx_string_tab[2]
 #define __pyx_kp_u_pyutmp_linux_pyx __pyx_string_tab[3]
 #define __pyx_n_u_ACCOUNTING __pyx_string_tab[4]
 #define __pyx_n_u_BOOT_TIME __pyx_string_tab[5]
@@ -2710,7 +2741,7 @@ static __pyx_mstatetype * const __pyx_mstate_global = &__pyx_mstate_global_stati
 #define __pyx_n_u_ut_user_process __pyx_string_tab[61]
 #define __pyx_n_u_values __pyx_string_tab[62]
 #define __pyx_kp_b_iso88591_A_4q_A __pyx_string_tab[63]
-#define __pyx_kp_b_iso88591_A_4t1_A_A_81_1_A_q_3a_ZuA_Ye1_Q __pyx_string_tab[64]
+#define __pyx_kp_b_iso88591_A_4t1_A_A_81_1_A_q_3a_ZuA_Ye6_Q __pyx_string_tab[64]
 #define __pyx_kp_b_iso88591_A __pyx_string_tab[65]
 #define __pyx_kp_b_iso88591_q_L_1_AQ __pyx_string_tab[66]
 #define __pyx_int_0 __pyx_number_tab[0]
@@ -3337,7 +3368,8 @@ static PyObject *__pyx_pf_6pyutmp_12pyutmp_linux_9_UtmpFile_6_get_next_entry(CYT
   PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
   size_t __pyx_t_6;
-  Py_ssize_t __pyx_t_7;
+  char *__pyx_t_7;
+  Py_ssize_t __pyx_t_8;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -3461,7 +3493,7 @@ static PyObject *__pyx_pf_6pyutmp_12pyutmp_linux_9_UtmpFile_6_get_next_entry(CYT
  *             u.ut_type = _TYPE_MAP[entry.ut_type]
  *             u.ut_user_process = (u.ut_type == 'USER_PROCESS')             # <<<<<<<<<<<<<<
  *             u.ut_pid = entry.ut_pid
- *             u.ut_id = entry.ut_id
+ *             u.ut_id = entry.ut_id.decode('utf-8', 'surrogateescape')
 */
     __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_u, __pyx_mstate_global->__pyx_n_u_ut_type); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 97, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
@@ -3474,7 +3506,7 @@ static PyObject *__pyx_pf_6pyutmp_12pyutmp_linux_9_UtmpFile_6_get_next_entry(CYT
  *             u.ut_type = _TYPE_MAP[entry.ut_type]
  *             u.ut_user_process = (u.ut_type == 'USER_PROCESS')
  *             u.ut_pid = entry.ut_pid             # <<<<<<<<<<<<<<
- *             u.ut_id = entry.ut_id
+ *             u.ut_id = entry.ut_id.decode('utf-8', 'surrogateescape')
  *             u.ut_user = entry.ut_user
 */
     __pyx_t_1 = __Pyx_PyLong_From_pid_t(__pyx_v_entry->ut_pid); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
@@ -3485,18 +3517,23 @@ static PyObject *__pyx_pf_6pyutmp_12pyutmp_linux_9_UtmpFile_6_get_next_entry(CYT
     /* "pyutmp/pyutmp_linux.pyx":99
  *             u.ut_user_process = (u.ut_type == 'USER_PROCESS')
  *             u.ut_pid = entry.ut_pid
- *             u.ut_id = entry.ut_id             # <<<<<<<<<<<<<<
+ *             u.ut_id = entry.ut_id.decode('utf-8', 'surrogateescape')             # <<<<<<<<<<<<<<
  *             u.ut_user = entry.ut_user
  *             u.ut_exit_code = entry.ut_exit.e_exit
 */
-    __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_v_entry->ut_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L1_error)
+
+    __pyx_t_7 = __pyx_v_entry->ut_id;
+    __pyx_t_8 = __Pyx_ssize_strlen(__pyx_t_7); if (unlikely(__pyx_t_8 == ((Py_ssize_t)-1))) __PYX_ERR(0, 99, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_decode_c_string(__pyx_t_7, 0, __pyx_t_8, NULL, __pyx_k_surrogateescape, PyUnicode_DecodeUTF8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
+
+    if (!(likely(PyUnicode_CheckExact(__pyx_t_1)) || __Pyx_RaiseUnexpectedTypeError("str", __pyx_t_1))) __PYX_ERR(0, 99, __pyx_L1_error)
     if (__Pyx_PyObject_SetAttrStr(__pyx_v_u, __pyx_mstate_global->__pyx_n_u_ut_id, __pyx_t_1) < (0)) __PYX_ERR(0, 99, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
     /* "pyutmp/pyutmp_linux.pyx":100
  *             u.ut_pid = entry.ut_pid
- *             u.ut_id = entry.ut_id
+ *             u.ut_id = entry.ut_id.decode('utf-8', 'surrogateescape')
  *             u.ut_user = entry.ut_user             # <<<<<<<<<<<<<<
  *             u.ut_exit_code = entry.ut_exit.e_exit
  *             u.ut_time = float(entry.ut_tv.tv_sec)
@@ -3507,7 +3544,7 @@ static PyObject *__pyx_pf_6pyutmp_12pyutmp_linux_9_UtmpFile_6_get_next_entry(CYT
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
     /* "pyutmp/pyutmp_linux.pyx":101
- *             u.ut_id = entry.ut_id
+ *             u.ut_id = entry.ut_id.decode('utf-8', 'surrogateescape')
  *             u.ut_user = entry.ut_user
  *             u.ut_exit_code = entry.ut_exit.e_exit             # <<<<<<<<<<<<<<
  *             u.ut_time = float(entry.ut_tv.tv_sec)
@@ -3546,11 +3583,11 @@ static PyObject *__pyx_pf_6pyutmp_12pyutmp_linux_9_UtmpFile_6_get_next_entry(CYT
  *             u.ut_addr = entry.ut_addr_v6[0]
  * 
  *             if len(entry.ut_user) > 0:             # <<<<<<<<<<<<<<
- *                 u.ut_user = entry.ut_user
+ *                 u.ut_user = entry.ut_user.decode('utf-8', 'surrogateescape')
  *             else:
 */
-    __pyx_t_7 = __Pyx_ssize_strlen(__pyx_v_entry->ut_user); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 105, __pyx_L1_error)
-    __pyx_t_3 = (__pyx_t_7 > 0);
+    __pyx_t_8 = __Pyx_ssize_strlen(__pyx_v_entry->ut_user); if (unlikely(__pyx_t_8 == ((Py_ssize_t)-1))) __PYX_ERR(0, 105, __pyx_L1_error)
+    __pyx_t_3 = (__pyx_t_8 > 0);
 
 
     if (__pyx_t_3) {
@@ -3559,12 +3596,17 @@ static PyObject *__pyx_pf_6pyutmp_12pyutmp_linux_9_UtmpFile_6_get_next_entry(CYT
       /* "pyutmp/pyutmp_linux.pyx":106
  * 
  *             if len(entry.ut_user) > 0:
- *                 u.ut_user = entry.ut_user             # <<<<<<<<<<<<<<
+ *                 u.ut_user = entry.ut_user.decode('utf-8', 'surrogateescape')             # <<<<<<<<<<<<<<
  *             else:
  *                 u.ut_user = None
 */
-      __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_v_entry->ut_user); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
+
+      __pyx_t_7 = __pyx_v_entry->ut_user;
+      __pyx_t_8 = __Pyx_ssize_strlen(__pyx_t_7); if (unlikely(__pyx_t_8 == ((Py_ssize_t)-1))) __PYX_ERR(0, 106, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_decode_c_string(__pyx_t_7, 0, __pyx_t_8, NULL, __pyx_k_surrogateescape, PyUnicode_DecodeUTF8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
+
+      if (!(likely(PyUnicode_CheckExact(__pyx_t_1)) || __Pyx_RaiseUnexpectedTypeError("str", __pyx_t_1))) __PYX_ERR(0, 106, __pyx_L1_error)
       if (__Pyx_PyObject_SetAttrStr(__pyx_v_u, __pyx_mstate_global->__pyx_n_u_ut_user, __pyx_t_1) < (0)) __PYX_ERR(0, 106, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
@@ -3572,14 +3614,14 @@ static PyObject *__pyx_pf_6pyutmp_12pyutmp_linux_9_UtmpFile_6_get_next_entry(CYT
  *             u.ut_addr = entry.ut_addr_v6[0]
  * 
  *             if len(entry.ut_user) > 0:             # <<<<<<<<<<<<<<
- *                 u.ut_user = entry.ut_user
+ *                 u.ut_user = entry.ut_user.decode('utf-8', 'surrogateescape')
  *             else:
 */
       goto __pyx_L5;
     }
 
     /* "pyutmp/pyutmp_linux.pyx":108
- *                 u.ut_user = entry.ut_user
+ *                 u.ut_user = entry.ut_user.decode('utf-8', 'surrogateescape')
  *             else:
  *                 u.ut_user = None             # <<<<<<<<<<<<<<
  * 
@@ -3597,8 +3639,8 @@ static PyObject *__pyx_pf_6pyutmp_12pyutmp_linux_9_UtmpFile_6_get_next_entry(CYT
  *                 u.ut_line = None
  *             else:
 */
-    __pyx_t_7 = __Pyx_ssize_strlen(__pyx_v_entry->ut_line); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 110, __pyx_L1_error)
-    __pyx_t_3 = (__pyx_t_7 == 0);
+    __pyx_t_8 = __Pyx_ssize_strlen(__pyx_v_entry->ut_line); if (unlikely(__pyx_t_8 == ((Py_ssize_t)-1))) __PYX_ERR(0, 110, __pyx_L1_error)
+    __pyx_t_3 = (__pyx_t_8 == 0);
 
 
     if (__pyx_t_3) {
@@ -3609,7 +3651,7 @@ static PyObject *__pyx_pf_6pyutmp_12pyutmp_linux_9_UtmpFile_6_get_next_entry(CYT
  *             if len(entry.ut_line) == 0:
  *                 u.ut_line = None             # <<<<<<<<<<<<<<
  *             else:
- *                 u.ut_line = entry.ut_line
+ *                 u.ut_line = entry.ut_line.decode('utf-8', 'surrogateescape')
 */
       if (__Pyx_PyObject_SetAttrStr(__pyx_v_u, __pyx_mstate_global->__pyx_n_u_ut_line, Py_None) < (0)) __PYX_ERR(0, 111, __pyx_L1_error)
 
@@ -3626,19 +3668,24 @@ static PyObject *__pyx_pf_6pyutmp_12pyutmp_linux_9_UtmpFile_6_get_next_entry(CYT
     /* "pyutmp/pyutmp_linux.pyx":113
  *                 u.ut_line = None
  *             else:
- *                 u.ut_line = entry.ut_line             # <<<<<<<<<<<<<<
+ *                 u.ut_line = entry.ut_line.decode('utf-8', 'surrogateescape')             # <<<<<<<<<<<<<<
  *                 if not u.ut_line.startswith('/'):
  *                     u.ut_line = '/dev/' + u.ut_line
 */
     /*else*/ {
-      __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_v_entry->ut_line); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
+
+      __pyx_t_7 = __pyx_v_entry->ut_line;
+      __pyx_t_8 = __Pyx_ssize_strlen(__pyx_t_7); if (unlikely(__pyx_t_8 == ((Py_ssize_t)-1))) __PYX_ERR(0, 113, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_decode_c_string(__pyx_t_7, 0, __pyx_t_8, NULL, __pyx_k_surrogateescape, PyUnicode_DecodeUTF8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
+
+      if (!(likely(PyUnicode_CheckExact(__pyx_t_1)) || __Pyx_RaiseUnexpectedTypeError("str", __pyx_t_1))) __PYX_ERR(0, 113, __pyx_L1_error)
       if (__Pyx_PyObject_SetAttrStr(__pyx_v_u, __pyx_mstate_global->__pyx_n_u_ut_line, __pyx_t_1) < (0)) __PYX_ERR(0, 113, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
       /* "pyutmp/pyutmp_linux.pyx":114
  *             else:
- *                 u.ut_line = entry.ut_line
+ *                 u.ut_line = entry.ut_line.decode('utf-8', 'surrogateescape')
  *                 if not u.ut_line.startswith('/'):             # <<<<<<<<<<<<<<
  *                     u.ut_line = '/dev/' + u.ut_line
  * 
@@ -3649,7 +3696,7 @@ static PyObject *__pyx_pf_6pyutmp_12pyutmp_linux_9_UtmpFile_6_get_next_entry(CYT
       __Pyx_INCREF(__pyx_t_5);
       __pyx_t_6 = 0;
       {
-        PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_mstate_global->__pyx_kp_u_};
+        PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_mstate_global->__pyx_kp_u__2};
         __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_startswith, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -3665,7 +3712,7 @@ static PyObject *__pyx_pf_6pyutmp_12pyutmp_linux_9_UtmpFile_6_get_next_entry(CYT
 
 
         /* "pyutmp/pyutmp_linux.pyx":115
- *                 u.ut_line = entry.ut_line
+ *                 u.ut_line = entry.ut_line.decode('utf-8', 'surrogateescape')
  *                 if not u.ut_line.startswith('/'):
  *                     u.ut_line = '/dev/' + u.ut_line             # <<<<<<<<<<<<<<
  * 
@@ -3681,7 +3728,7 @@ static PyObject *__pyx_pf_6pyutmp_12pyutmp_linux_9_UtmpFile_6_get_next_entry(CYT
 
         /* "pyutmp/pyutmp_linux.pyx":114
  *             else:
- *                 u.ut_line = entry.ut_line
+ *                 u.ut_line = entry.ut_line.decode('utf-8', 'surrogateescape')
  *                 if not u.ut_line.startswith('/'):             # <<<<<<<<<<<<<<
  *                     u.ut_line = '/dev/' + u.ut_line
  * 
@@ -3694,11 +3741,11 @@ static PyObject *__pyx_pf_6pyutmp_12pyutmp_linux_9_UtmpFile_6_get_next_entry(CYT
  *                     u.ut_line = '/dev/' + u.ut_line
  * 
  *             if len(entry.ut_host) > 0:             # <<<<<<<<<<<<<<
- *                 u.ut_host = entry.ut_host
+ *                 u.ut_host = entry.ut_host.decode('utf-8', 'surrogateescape')
  *             else:
 */
-    __pyx_t_7 = __Pyx_ssize_strlen(__pyx_v_entry->ut_host); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 117, __pyx_L1_error)
-    __pyx_t_2 = (__pyx_t_7 > 0);
+    __pyx_t_8 = __Pyx_ssize_strlen(__pyx_v_entry->ut_host); if (unlikely(__pyx_t_8 == ((Py_ssize_t)-1))) __PYX_ERR(0, 117, __pyx_L1_error)
+    __pyx_t_2 = (__pyx_t_8 > 0);
 
 
     if (__pyx_t_2) {
@@ -3707,12 +3754,17 @@ static PyObject *__pyx_pf_6pyutmp_12pyutmp_linux_9_UtmpFile_6_get_next_entry(CYT
       /* "pyutmp/pyutmp_linux.pyx":118
  * 
  *             if len(entry.ut_host) > 0:
- *                 u.ut_host = entry.ut_host             # <<<<<<<<<<<<<<
+ *                 u.ut_host = entry.ut_host.decode('utf-8', 'surrogateescape')             # <<<<<<<<<<<<<<
  *             else:
  *                 u.ut_host = None
 */
-      __pyx_t_4 = __Pyx_PyBytes_FromString(__pyx_v_entry->ut_host); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 118, __pyx_L1_error)
+
+      __pyx_t_7 = __pyx_v_entry->ut_host;
+      __pyx_t_8 = __Pyx_ssize_strlen(__pyx_t_7); if (unlikely(__pyx_t_8 == ((Py_ssize_t)-1))) __PYX_ERR(0, 118, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_decode_c_string(__pyx_t_7, 0, __pyx_t_8, NULL, __pyx_k_surrogateescape, PyUnicode_DecodeUTF8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 118, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
+
+      if (!(likely(PyUnicode_CheckExact(__pyx_t_4)) || __Pyx_RaiseUnexpectedTypeError("str", __pyx_t_4))) __PYX_ERR(0, 118, __pyx_L1_error)
       if (__Pyx_PyObject_SetAttrStr(__pyx_v_u, __pyx_mstate_global->__pyx_n_u_ut_host, __pyx_t_4) < (0)) __PYX_ERR(0, 118, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
@@ -3720,14 +3772,14 @@ static PyObject *__pyx_pf_6pyutmp_12pyutmp_linux_9_UtmpFile_6_get_next_entry(CYT
  *                     u.ut_line = '/dev/' + u.ut_line
  * 
  *             if len(entry.ut_host) > 0:             # <<<<<<<<<<<<<<
- *                 u.ut_host = entry.ut_host
+ *                 u.ut_host = entry.ut_host.decode('utf-8', 'surrogateescape')
  *             else:
 */
       goto __pyx_L8;
     }
 
     /* "pyutmp/pyutmp_linux.pyx":120
- *                 u.ut_host = entry.ut_host
+ *                 u.ut_host = entry.ut_host.decode('utf-8', 'surrogateescape')
  *             else:
  *                 u.ut_host = None             # <<<<<<<<<<<<<<
  * 
@@ -4665,30 +4717,30 @@ static int __Pyx_InitConstants(__pyx_mstatetype *__pyx_mstate) {
   CYTHON_UNUSED_VAR(__pyx_mstate);
   {
     const struct { const unsigned int length: 5; } str_length_index[] = {{1},{5},{1},{16},{10},{9},{12},{12},{13},{8},{8},{7},{12},{10},{4},{9},{9},{17},{18},{25},{16},{20},{12},{7},{7},{8},{8},{8},{13},{10},{15},{8},{11},{12},{8},{15},{13},{8},{18},{18},{5},{5},{6},{4},{3},{19},{6},{4},{10},{10},{1},{7},{12},{7},{5},{7},{6},{10},{7},{7},{7},{15},{6}};
-    const struct { const unsigned int length: 9; } bytes_length_index[] = {{14},{274},{7},{24}};
+    const struct { const unsigned int length: 9; } bytes_length_index[] = {{14},{306},{7},{24}};
     #ifndef CYTHON_COMPRESS_STRINGS
       #define CYTHON_COMPRESS_STRINGS 90
     #endif
-    #if (CYTHON_COMPRESS_STRINGS) == 1 /* compression: zlib (584 bytes) */
-static const char cstring[] = "x\332\205QOo\3230\024\247h\240\302Z\255\025C\034&\016\005!\301\245S\305\206\270\241\260\206\251\242K\272\256a\032;X^\362J\r\251\235\306\316\326\3368\366\350c\2169\346\343\354\230c?\002\037\001\333k\306\340\302!\376\275\337\037\373\305\317\273\273\001\\\356~\210\026\211\230F($4\231\267\243\305\334:8p=g\324s\016?\272\356\010\215zGv\327\266\272h0t\017\354\223\223\236\323\033\225u\337=\3549%q\354S\023v\373]\203C\317A\375/}\357\304\036\226\021o\204<\347\263\343\236:\236n9:\033\330\350\310\032 \315>\221\020n\2136B\001\204\010\335\025\010%\342/\345\033\010Da.\020P\021/\376\0301\\\021\032 4X\314\325\327%\276@\216\212\ra\214\020\246\224\t,@\035\264\356\200\002\346k\030\047\324\340\272\r\232bB\r\202\300~\21097\204\005Ih6Ocf\372\0220\006\305S#G1D86\345,\301a)\013\340\372\320\177\376\230p\344\263\230%\202P\320\204E@1_P\237\260\366\255\301\375\320\330\024\211\030\373p\201\375\037f7\0210\345\354\342;\370\"\302b\022\261\350\346!\333w\337\363f\024\034\3021\007\021\300\030\047\241\340\002\307\202_\0211I\022\201p\020\304\n`\256n\355\263\000T=a\\( \201Zto\005\221!\0348\047\214\252J\220\251\226\305\"\322\220p\210\327\240\006\300|\025\273\304a\002\374\247UT7\227{\313YQ\333\226V\311\204\354\030^\324\032\262\226Z\253\352N\372>\353h\257\243\245\r\355\324\227\347\351\243\254\231\275\312\324\336\372u\275\245\3527\371\333\034k\353\253LR\2239\223\220vn\302\017\322c\023|\236z\331\353\274u+\246\220\275\313\233%=\317+ysU\333Zr\331\222\373\351\343\354Ef\025\215\246\334I\355\254\2712\205u\327~\231\035\027k\265L\025\215\047rO\316\322j\266\231wr\253\330~*\317\263j~?o\345\235\377\234\374\353\341\275zSV\314\345W\325\255\345LO\244!+\327\033\317\344\254\250\326\226\375\264\262\036\203J\310\343\33707b\254";
-    PyObject *data = __Pyx_DecompressString(cstring, 584, 1);
+    #if (CYTHON_COMPRESS_STRINGS) == 1 /* compression: zlib (603 bytes) */
+static const char cstring[] = "x\332\215Q?o\323@\024\047\250\240@\0235\021E\245\252\030\002B\202%U\324R\261!\223\230*\"\265\3234\246*\035NW\373\205\0368w\216\357\334&\033c\306\033=z\364\230\221\217\321\321c>\002\037\201\3635iK\047\006\373\367~\177\336=\373\335\366\266\007\027\333\037\203I$\206\001\362\t\215\306\365`26\232M\333\261\372mk\377\223m\367Q\277}`\266L\243\205\272=\273i\036\035\265\255v\177Yw\354\375\266\265$\226y\254\303v\247\245\261\347X\250\363\265\343\034\231\275e\304\351#\307\372b\331\307\226\223\217\354\237tMt`tQ\316>\023\037n\212:B\036\370\010\335\025\010%\342\037\345;\010Da,\020P\021Nn\215\020.\t\365\020\352N\306\352i\021W K\305z0@\010S\312\004\026\240\016ZL@\036ss\030DT\343b\014\032bB5\202\300\256\2179\327\204y\221\257\233\207!\323s\th\203\342\241\226\203\020\002\034\352r\024a\177)\013\340\371\241\367\276\230p\344\262\220E\202P\310\t\013\200b>\241.a\365\033\203\273\276\266)\022!v\341\014\273?u7\0210\344\354\354\007\270\"\300\342<`\301\365E\326\357\336\347\365*8\370\003\016\302\203\001\216|\301\005\016\005\277$\342<\212\004\302\236\027*\200\261\372k\227y\240\352s\306\205\002\342\251W>[A\240\t\007\316\t\243\252\022d\230\313b\022\344\020q\010\027\240\026\300\\\025\273\300~\004\374\227\221\025W\247\273\323QVZ\227\306\222\t\331\320<+Ud)6\346\305\255\370C\322\310\275F.\255\344Nyz\032?I\252\311\233D\365\226\257\3125U\277KwR\234[\337d\024\353\314\211\204x/\331H\013\351\346\254v\335\364(>\324\r/c\047y\233\336\2121${iuIOUKu^Z\233rY\223\357\343\247\311\253\304\310*U\271\025\233\311\213tcV\230m\376\256\315\265`\334\215\275N\016\263\205z?\235U\236\311]9\212\213\311j\332H\215l\375\271<M\212\351\303\264\2266\376s\322\237\307\017\312UY\320\313\231\027\327\246\243|c\025Y\270Z\331\220\243\254X\232v\342\302bM*!\017\377\002\251-n\356";
+    PyObject *data = __Pyx_DecompressString(cstring, 603, 1);
     #define __Pyx_DecompressString_LZSS_UNUSED
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #elif (CYTHON_COMPRESS_STRINGS) > 0 && (CYTHON_COMPRESS_STRINGS) <= 90 /* compression: lzss (726 bytes) */
-static const char cstring[] = "\377//dev/?p\377yutmp_li\377nux.pyxA\377CCOUNTIN\377GBOOT_TI\377MEDEAD_P\377ROCESSIN\373IT\004\005LOGIN\356\021\005NEW(\002OLD\3760\002RUN_LVL\357USER4\005UT_\377UNKNOWNU\376o\001TYPE_MA{P_\n\001File\000\006\377.__del__\336\005\tinit\005\nge\377t_next_e\357ntry2\007rew\377ind__Pyx~\001\000Dict_N$\000\377Ref__ann\237otateX\000[\004_wdoc\n\001fun\003\002\276`\004_main\"\001m\377etaclass\336\010\002odul8\002mr\355os\002ie\024\002nam~O\002preparZ\002\357qual\017\005tes\374\270\001\243\014is_cor\177outine_\n\000\377openasyn\357cio.\020\006scl\376\032\002n_trace\357back\353\002ite\377msobject\177pathpop\303C\371.\304I\205#selfs\377etdefaul\377tstartsw\377ithuut_a\267ddr\004\000ex\332 c\367ode\020\000hostF\027\000id\034\000x\001#\000p\010\002\177session3\000wtim&\001typ-\001\347use@\001\003\001_pr\373oc$\000value\377s\200A\330\010\013\2104\177\210q\330\014\024\220A\006\005\367t\2201\013\002\330\014\020\220\377\014\230A\340\010\033\2308\363\2401&\001\025\000\020\220\004\220\377A\330\014\r\210[\230\t\337\240\021\240%\2409\000\r\320\373\r!\t\000)\2503\250a\336\027\001Z\220u\230\037\002Y\220we\2301\047\003\005\230Q3\000\377\320\r\035\230U\240(\250\375!\014\006\230e\2406\250\021\376\034\005[\250\001\250\021\340\014\377\017\210s\220!\2205\230\377\n\240\"\240A\330\020\021\177\220\033\230E\240\021\340\004\002\335A\023\t#\240Q\031\003A\340\376\036\005\330\020\023\2204\220q\377\230\010\240\013\2501\250A\377\330\024\025\220[\240\010\250\337\002\250!\2501;\034\360\006\337\000\r\021\220\001\210\"\340\010\367\017\210q\234!\020\220\001\320\377\004\027\220q\330\010\014\210gL\230\001\200$\254 \220Q";
-    PyObject *data = __Pyx_DecompressString_LZSS(cstring, 726, 929);
+    #elif (CYTHON_COMPRESS_STRINGS) > 0 && (CYTHON_COMPRESS_STRINGS) <= 90 /* compression: lzss (742 bytes) */
+static const char cstring[] = "\377//dev/?p\377yutmp_li\377nux.pyxA\377CCOUNTIN\377GBOOT_TI\377MEDEAD_P\377ROCESSIN\373IT\004\005LOGIN\356\021\005NEW(\002OLD\3760\002RUN_LVL\357USER4\005UT_\377UNKNOWNU\376o\001TYPE_MA{P_\n\001File\000\006\377.__del__\336\005\tinit\005\nge\377t_next_e\357ntry2\007rew\377ind__Pyx~\001\000Dict_N$\000\377Ref__ann\237otateX\000[\004_wdoc\n\001fun\003\002\276`\004_main\"\001m\377etaclass\336\010\002odul8\002mr\355os\002ie\024\002nam~O\002preparZ\002\357qual\017\005tes\374\270\001\243\014is_cor\177outine_\n\000\377openasyn\357cio.\020\006scl\376\032\002n_trace\357back\353\002ite\377msobject\177pathpop\303C\371.\304I\205#selfs\377etdefaul\377tstartsw\377ithuut_a\267ddr\004\000ex\332 c\367ode\020\000hostF\027\000id\034\000x\001#\000p\010\002\177session3\000wtim&\001typ-\001\347use@\001\003\001_pr\373oc$\000value\377s\200A\330\010\013\2104\177\210q\330\014\024\220A\006\005\367t\2201\013\002\330\014\020\220\377\014\230A\340\010\033\2308\363\2401&\001\025\000\020\220\004\220\377A\330\014\r\210[\230\t\337\240\021\240%\2409\000\r\320\373\r!\t\000)\2503\250a\336\027\001Z\220u\230\037\002Y\220\377e\2306\240\027\250\001\250w\031\260!/\003\005\230Q;\000\377\320\r\035\230U\240(\250~\013\007\230e\2406\250\021\034\005\375[0\000\021\340\014\017\210s\377\220!\2205\230\n\240\"\377\240A\330\020\021\220\033\230\377E\240\030\250\027\260\001\260\257\031\270!\340\014\002A\033\t#\333\240Q!\003A\340\036\r\330\020\377\023\2204\220q\230\010\240\377\013\2501\250A\330\024\025\377\220[\240\010\250\002\250!\373\2501C$\360\006\000\r\021\373\220\001\250\"\340\010\017\210q\376\274!\020\220\001\320\004\027\220\377q\330\010\014\210L\230\001\014\240$\314 \220Q";
+    PyObject *data = __Pyx_DecompressString_LZSS(cstring, 742, 961);
     #define __Pyx_DecompressString_UNUSED
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #else /* compression: none (929 bytes) */
-static const char bytes[] = "//dev/?pyutmp_linux.pyxACCOUNTINGBOOT_TIMEDEAD_PROCESSINIT_PROCESSLOGIN_PROCESSNEW_TIMEOLD_TIMERUN_LVLUSER_PROCESSUT_UNKNOWNUtmp_TYPE_MAP_UtmpFile_UtmpFile.__del___UtmpFile.__init___UtmpFile._get_next_entry_UtmpFile.rewind__Pyx_PyDict_NextRef__annotate____del____doc____func____init____main____metaclass____module____mro_entries____name____prepare____qualname____test___get_next_entry_is_coroutine_is_openasyncio.coroutinescline_in_tracebackentryitemsobjectpathpoppyutmp.pyutmp_linuxrewindselfsetdefaultstartswithuut_addrut_exit_codeut_hostut_idut_lineut_pidut_sessionut_timeut_typeut_userut_user_processvalues\200A\330\010\013\2104\210q\330\014\024\220A\200A\330\010\013\2104\210t\2201\330\014\024\220A\330\014\020\220\014\230A\340\010\033\2308\2401\330\010\013\2101\330\014\020\220\004\220A\330\014\r\210[\230\t\240\021\240%\240q\330\014\r\320\r!\240\021\240)\2503\250a\330\014\r\210Z\220u\230A\330\014\r\210Y\220e\2301\330\014\r\210[\230\005\230Q\330\014\r\320\r\035\230U\240(\250!\330\014\r\210[\230\005\230Q\230e\2406\250\021\330\014\r\210[\230\005\230[\250\001\250\021\340\014\017\210s\220!\2205\230\n\240\"\240A\330\020\021\220\033\230E\240\021\340\020\021\220\033\230A\340\014\017\210s\220!\2205\230\n\240#\240Q\330\020\021\220\033\230A\340\020\021\220\033\230E\240\021\330\020\023\2204\220q\230\010\240\013\2501\250A\330\024\025\220[\240\010\250\002\250!\2501\340\014\017\210s\220!\2205\230\n\240\"\240A\330\020\021\220\033\230E\240\021\340\020\021\220\033\230A\360\006\000\r\021\220\001\330\014\024\220A\340\010\017\210q\200A\330\010\020\220\001\320\004\027\220q\330\010\014\210L\230\001\330\010\013\2101\330\014\024\220A\220Q";
+    #else /* compression: none (961 bytes) */
+static const char bytes[] = "//dev/?pyutmp_linux.pyxACCOUNTINGBOOT_TIMEDEAD_PROCESSINIT_PROCESSLOGIN_PROCESSNEW_TIMEOLD_TIMERUN_LVLUSER_PROCESSUT_UNKNOWNUtmp_TYPE_MAP_UtmpFile_UtmpFile.__del___UtmpFile.__init___UtmpFile._get_next_entry_UtmpFile.rewind__Pyx_PyDict_NextRef__annotate____del____doc____func____init____main____metaclass____module____mro_entries____name____prepare____qualname____test___get_next_entry_is_coroutine_is_openasyncio.coroutinescline_in_tracebackentryitemsobjectpathpoppyutmp.pyutmp_linuxrewindselfsetdefaultstartswithuut_addrut_exit_codeut_hostut_idut_lineut_pidut_sessionut_timeut_typeut_userut_user_processvalues\200A\330\010\013\2104\210q\330\014\024\220A\200A\330\010\013\2104\210t\2201\330\014\024\220A\330\014\020\220\014\230A\340\010\033\2308\2401\330\010\013\2101\330\014\020\220\004\220A\330\014\r\210[\230\t\240\021\240%\240q\330\014\r\320\r!\240\021\240)\2503\250a\330\014\r\210Z\220u\230A\330\014\r\210Y\220e\2306\240\027\250\001\250\031\260!\330\014\r\210[\230\005\230Q\330\014\r\320\r\035\230U\240(\250!\330\014\r\210[\230\005\230Q\230e\2406\250\021\330\014\r\210[\230\005\230[\250\001\250\021\340\014\017\210s\220!\2205\230\n\240\"\240A\330\020\021\220\033\230E\240\030\250\027\260\001\260\031\270!\340\020\021\220\033\230A\340\014\017\210s\220!\2205\230\n\240#\240Q\330\020\021\220\033\230A\340\020\021\220\033\230E\240\030\250\027\260\001\260\031\270!\330\020\023\2204\220q\230\010\240\013\2501\250A\330\024\025\220[\240\010\250\002\250!\2501\340\014\017\210s\220!\2205\230\n\240\"\240A\330\020\021\220\033\230E\240\030\250\027\260\001\260\031\270!\340\020\021\220\033\230A\360\006\000\r\021\220\001\330\014\024\220A\340\010\017\210q\200A\330\010\020\220\001\320\004\027\220q\330\010\014\210L\230\001\330\010\013\2101\330\014\024\220A\220Q";
     PyObject *data = NULL;
     #define __Pyx_DecompressString_UNUSED
     #define __Pyx_DecompressString_LZSS_UNUSED
@@ -4828,7 +4880,7 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
   {
     const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 88};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_entry, __pyx_mstate->__pyx_n_u_u};
-    __pyx_mstate_global->__pyx_codeobj_tab[3] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyutmp_linux_pyx, __pyx_mstate->__pyx_n_u_get_next_entry, __pyx_mstate->__pyx_kp_b_iso88591_A_4t1_A_A_81_1_A_q_3a_ZuA_Ye1_Q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[3])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[3] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_pyutmp_linux_pyx, __pyx_mstate->__pyx_n_u_get_next_entry, __pyx_mstate->__pyx_kp_b_iso88591_A_4t1_A_A_81_1_A_q_3a_ZuA_Ye6_Q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[3])) goto bad;
   }
   Py_DECREF(tuple_dedup_map);
   return 0;
@@ -6417,6 +6469,96 @@ __pyx_return_true:
     Py_RETURN_TRUE;
 __pyx_return_false:
     Py_RETURN_FALSE;
+}
+
+/* decode_c_string */
+static CYTHON_INLINE PyObject* __Pyx_decode_c_string(
+         const char* cstring, Py_ssize_t start, Py_ssize_t stop,
+         const char* encoding, const char* errors,
+         PyObject* (*decode_func)(const char *s, Py_ssize_t size, const char *errors)) {
+    Py_ssize_t length;
+    if (unlikely((start < 0) | (stop < 0))) {
+        size_t slen = strlen(cstring);
+        if (unlikely(slen > (size_t) PY_SSIZE_T_MAX)) {
+            PyErr_SetString(PyExc_OverflowError,
+                            "c-string too long to convert to Python");
+            return NULL;
+        }
+        length = (Py_ssize_t) slen;
+        if (start < 0) {
+            start += length;
+            if (start < 0)
+                start = 0;
+        }
+        if (stop < 0)
+            stop += length;
+    }
+    if (unlikely(stop <= start))
+        return __Pyx_NewRef(__pyx_mstate_global->__pyx_empty_unicode);
+    length = stop - start;
+    cstring += start;
+    if (decode_func) {
+        return decode_func(cstring, length, errors);
+    } else {
+        return PyUnicode_Decode(cstring, length, encoding, errors);
+    }
+}
+
+/* FormatTypeName (used by RaiseErrorWithObjectType1) */
+#if CYTHON_COMPILING_IN_LIMITED_API && __PYX_LIMITED_VERSION_HEX < 0x030d0000
+static __Pyx_TypeName
+__Pyx_PyType_GetFullyQualifiedName(PyTypeObject* tp)
+{
+    PyObject *module = NULL, *name = NULL, *result = NULL;
+    #if __PYX_LIMITED_VERSION_HEX < 0x030b0000
+    name = __Pyx_PyObject_GetAttrStr((PyObject *)tp,
+                                               __pyx_mstate_global->__pyx_n_u_qualname);
+    #else
+    name = PyType_GetQualName(tp);
+    #endif
+    if (unlikely(name == NULL) || unlikely(!PyUnicode_Check(name))) goto bad;
+    module = __Pyx_PyObject_GetAttrStr((PyObject *)tp,
+                                               __pyx_mstate_global->__pyx_n_u_module);
+    if (unlikely(module == NULL) || unlikely(!PyUnicode_Check(module))) goto bad;
+    if (PyUnicode_CompareWithASCIIString(module, "builtins") == 0) {
+        result = name;
+        name = NULL;
+        goto done;
+    }
+    result = PyUnicode_FromFormat("%U.%U", module, name);
+    if (unlikely(result == NULL)) goto bad;
+  done:
+    Py_XDECREF(name);
+    Py_XDECREF(module);
+    return result;
+  bad:
+    PyErr_Clear();
+    if (name) {
+        result = name;
+        name = NULL;
+    } else {
+        result = __Pyx_NewRef(__pyx_mstate_global->__pyx_kp_u_);
+    }
+    goto done;
+}
+#endif
+
+/* RaiseErrorWithObjectType1 (used by RaiseUnexpectedTypeError) */
+static void __Pyx_RaiseErrorWithType1(PyObject* exc_type, const char* message, const char *arg, PyTypeObject *type_obj) {
+    __Pyx_TypeName type_name = __Pyx_PyType_GetFullyQualifiedName(type_obj);
+    #if CYTHON_COMPILING_IN_LIMITED_API && __PYX_LIMITED_VERSION_HEX < 0x030d0000
+    if (unlikely(!type_name)) return;
+    #endif
+    PyErr_Format(exc_type, message, arg, type_name);
+    __Pyx_DECREF_TypeName(type_name);
+}
+
+/* RaiseUnexpectedTypeError */
+static int __Pyx_RaiseUnexpectedTypeError(const char *expected, PyObject *obj) {
+    __Pyx_RaiseTypeErrorWithObjectType1(
+        "Expected %.42s, got " __Pyx_FMT_TYPENAME,
+        expected, obj);
+    return 0;
 }
 
 /* PyObjectFastCallMethod */
@@ -8969,45 +9111,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyLong_From_int(int value) {
 #endif
     }
 }
-
-/* FormatTypeName */
-#if CYTHON_COMPILING_IN_LIMITED_API && __PYX_LIMITED_VERSION_HEX < 0x030d0000
-static __Pyx_TypeName
-__Pyx_PyType_GetFullyQualifiedName(PyTypeObject* tp)
-{
-    PyObject *module = NULL, *name = NULL, *result = NULL;
-    #if __PYX_LIMITED_VERSION_HEX < 0x030b0000
-    name = __Pyx_PyObject_GetAttrStr((PyObject *)tp,
-                                               __pyx_mstate_global->__pyx_n_u_qualname);
-    #else
-    name = PyType_GetQualName(tp);
-    #endif
-    if (unlikely(name == NULL) || unlikely(!PyUnicode_Check(name))) goto bad;
-    module = __Pyx_PyObject_GetAttrStr((PyObject *)tp,
-                                               __pyx_mstate_global->__pyx_n_u_module);
-    if (unlikely(module == NULL) || unlikely(!PyUnicode_Check(module))) goto bad;
-    if (PyUnicode_CompareWithASCIIString(module, "builtins") == 0) {
-        result = name;
-        name = NULL;
-        goto done;
-    }
-    result = PyUnicode_FromFormat("%U.%U", module, name);
-    if (unlikely(result == NULL)) goto bad;
-  done:
-    Py_XDECREF(name);
-    Py_XDECREF(module);
-    return result;
-  bad:
-    PyErr_Clear();
-    if (name) {
-        result = name;
-        name = NULL;
-    } else {
-        result = __Pyx_NewRef(__pyx_mstate_global->__pyx_kp_u__2);
-    }
-    goto done;
-}
-#endif
 
 /* CIntFromPyVerify (used by CIntFromPy) */
 #define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\

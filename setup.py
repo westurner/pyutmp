@@ -79,7 +79,7 @@ os.chdir('pyutmp')
 c_file = 'pyutmp_%s.c' % platform
 pyx_file = 'pyutmp_%s.pyx' % platform
 ext_module = 'pyutmp_%s' % platform
-ext_package = os.path.join(PACKAGE, ext_module)
+ext_package = '.'.join((PACKAGE, ext_module))
 
 build_c_file = False
 if not os.access(c_file, os.F_OK):

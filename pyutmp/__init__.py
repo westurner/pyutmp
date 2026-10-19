@@ -247,6 +247,8 @@ class UtmpFile:
                 Path to the *utmp* file to read. Defaults to the appropriate
                 "live" *utmp* file for the current operating system.
         """
+        if path is not None:
+            path = os.fsencode(path)
         self.__utmp = _pyutmp._UtmpFile(path)
 
     def __del__(self):
