@@ -9,11 +9,11 @@
 # Imports
 # ---------------------------------------------------------------------------
 
-from __future__ import print_function
 from setuptools import setup, Extension
 import os
 import sys
-import imp
+import importlib.util
+import sys
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -26,7 +26,7 @@ PACKAGE = 'pyutmp'
 sys.path = [HERE] + sys.path
 
 # ---------------------------------------------------------------------------
-# Functions 
+# Functions
 # ---------------------------------------------------------------------------
 
 def run_command(cmd):
@@ -45,8 +45,13 @@ def die(msg):
 
 mf = os.path.join(HERE, 'pyutmp', '__init__.py')
 os.environ['__IN_SETUP_PY'] = 'True'
-m = imp.load_module('pyutmp', open(mf), mf,
-                    ('__init__.py', 'r', imp.PY_SOURCE))
+
+
+spec = importlib.util.spec_from_file_location('pyutmp', mf)
+m = importlib.util.module_from_spec(spec)
+sys.modules['pyutmp'] = m
+spec.loader.exec_module(m)
+
 platform = m._get_platform()
 long_description = m.__doc__
 
@@ -83,14 +88,14 @@ if not os.access(c_file, os.F_OK):
 else:
     st_c = os.stat(c_file)
     st_pyx = os.stat(pyx_file)
-    if st_c.st_mtime < st_pyx.st_mtime:
+    if st_c.st_mtime <= st_pyx.st_mtime:
         print('"%s" is newer than "%s". Rebuilding "%s".' %\
               (pyx_file, c_file, c_file))
         build_c_file = True
 if build_c_file:
     rc = run_command('cython %s' % pyx_file)
     if rc != 0:
-        die('Failed to build "%s" from "%s"' % (c_file, pyx_file))
+        die(f'Failed to build "{c_file}" from "{pyx_file}"')
 os.chdir(HERE)
 
 # ---------------------------------------------------------------------------
@@ -104,7 +109,7 @@ setup(
     description=DESCRIPTION,
     long_description=long_description,
     url='http://software.clapper.org/pyutmp/',
-    license='BSD license',
+    license='BSD',
     author='Brian M. Clapper',
     author_email='bmc@clapper.org',
     py_modules=['pyutmp'],
@@ -114,7 +119,6 @@ setup(
     classifiers = [
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: BSD License',
         'Operating System :: Unix',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2'

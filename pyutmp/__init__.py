@@ -2,7 +2,7 @@
 # $Id$
 # ---------------------------------------------------------------------------
 
-"""
+r"""
 Introduction
 ============
 
@@ -182,7 +182,7 @@ __all__ = ['UtmpFile', 'Utmp']
 # Classes
 # ---------------------------------------------------------------------------
 
-class UtmpFile(object):
+class UtmpFile:
     """
     """
     def __init__(self):
@@ -204,7 +204,7 @@ class UtmpFile(object):
             yield utmp
             utmp = self._get_next_entry()
 
-class Utmp(object):
+class Utmp:
 
     pass
 
@@ -233,12 +233,12 @@ def _get_platform():
 # Initialization
 # ---------------------------------------------------------------------------
 
-class UtmpFile(object):
+class UtmpFile:
     """
     Represents the *utmp* file itself.
     """
     def __init__(self, path=None):
-        """
+        r"""
         Initialize a new UtmpFile object that will read `Utmp` entries from the
         specified *utmp*\ -format path.
 
@@ -275,7 +275,7 @@ class UtmpFile(object):
             yield u
             u = self.__utmp._get_next_entry()
 
-class Utmp(object):
+class Utmp:
     """
     Represents an individual entry in the *utmp* file. At a minimum, a
     Utmp object will contain the following fields.
