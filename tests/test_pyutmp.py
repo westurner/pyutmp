@@ -112,11 +112,20 @@ class TestUtmpFile(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "utmp"
             self.write_records(path, [_record()])
-            reader = pyutmp.UtmpFile(str(path))
+            reader = pyutmp.UtmpFile(path)
 
             self.assertEqual([entry.ut_pid for entry in reader], [1234])
             reader.rewind()
             self.assertEqual([entry.ut_pid for entry in reader], [1234])
+
+    def test_decodes_non_utf8_fields_with_surrogateescape(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "utmp"
+            self.write_records(path, [_record(user=b"ali\xffce")])
+
+            entry = next(iter(pyutmp.UtmpFile(path)))
+
+        self.assertEqual(entry.ut_user, "ali\udcffce")
 
 
 if __name__ == "__main__":

@@ -13,7 +13,6 @@ from setuptools import setup, Extension
 import os
 import sys
 import importlib.util
-import sys
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -109,19 +108,16 @@ setup(
     description=DESCRIPTION,
     long_description=long_description,
     url='http://software.clapper.org/pyutmp/',
-    license='BSD',
+    license='BSD-3-Clause',
     author='Brian M. Clapper',
     author_email='bmc@clapper.org',
-    py_modules=['pyutmp'],
     ext_modules=[Extension(ext_package,
                            [os.path.join(PACKAGE, c_file)],)],
-    setup_requires=["wheel"],
     classifiers = [
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',
         'Operating System :: Unix',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2'
         'Programming Language :: Python :: 3',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ]

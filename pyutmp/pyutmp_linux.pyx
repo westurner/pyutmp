@@ -4,6 +4,8 @@
 # $Id$
 # ---------------------------------------------------------------------------
 
+from libc.stddef cimport size_t
+
 cdef extern from "time.h":
     struct timeval:
         long tv_sec
@@ -59,6 +61,12 @@ _TYPE_MAP = {RUN_LVL: 'RUN_LVL',
              DEAD_PROCESS: 'DEAD_PROCESS',
              ACCOUNTING: 'ACCOUNTING'}
 
+cdef object _decode_field(char *value, size_t field_size):
+    cdef size_t length = 0
+    while length < field_size and value[length] != 0:
+        length += 1
+    return value[:length].decode('utf-8', 'surrogateescape')
+
 class Utmp(object):
     ut_type = 'UT_UNKNOWN'
     ut_pid = None
@@ -96,26 +104,28 @@ class _UtmpFile(object):
             u.ut_type = _TYPE_MAP[entry.ut_type]
             u.ut_user_process = (u.ut_type == 'USER_PROCESS')
             u.ut_pid = entry.ut_pid
-            u.ut_id = entry.ut_id.decode('utf-8', 'surrogateescape')
-            u.ut_user = entry.ut_user
+            u.ut_id = _decode_field(entry.ut_id, sizeof(entry.ut_id))
             u.ut_exit_code = entry.ut_exit.e_exit
             u.ut_time = float(entry.ut_tv.tv_sec)
             u.ut_addr = entry.ut_addr_v6[0]
 
-            if len(entry.ut_user) > 0:
-                u.ut_user = entry.ut_user.decode('utf-8', 'surrogateescape')
+            field = _decode_field(entry.ut_user, sizeof(entry.ut_user))
+            if field:
+                u.ut_user = field
             else:
                 u.ut_user = None
 
-            if len(entry.ut_line) == 0:
+            field = _decode_field(entry.ut_line, sizeof(entry.ut_line))
+            if not field:
                 u.ut_line = None
             else:
-                u.ut_line = entry.ut_line.decode('utf-8', 'surrogateescape')
+                u.ut_line = field
                 if not u.ut_line.startswith('/'):
                     u.ut_line = '/dev/' + u.ut_line
 
-            if len(entry.ut_host) > 0:
-                u.ut_host = entry.ut_host.decode('utf-8', 'surrogateescape')
+            field = _decode_field(entry.ut_host, sizeof(entry.ut_host))
+            if field:
+                u.ut_host = field
             else:
                 u.ut_host = None
 
